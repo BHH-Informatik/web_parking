@@ -1,11 +1,12 @@
 import { Navbar } from "./components"
+import GlobalStyles from './globalStyles';
 
 
 function App() {
 
   return (
     <>
-      Web Parking
+      <GlobalStyles/>
       <Navbar/>
     </>
   )

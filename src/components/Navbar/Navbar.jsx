@@ -11,7 +11,7 @@ const Navbar = () => {
     <>
       <SidebarContainer>
         <Icon />
-        <SidebarLink href="#">
+        <SidebarLink href="/">
             <LuParkingSquare  />
             <span>Parkplätze</span>
         </SidebarLink>
@@ -23,7 +23,7 @@ const Navbar = () => {
             <GrContact  />
             <span>Kontakt</span>
         </SidebarLink>
-        <SidebarLink href="#">
+        <SidebarLink href="/admin">
             <CiViewList  />
             <span>Admin Overview</span>
         </SidebarLink>

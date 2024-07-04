@@ -1,13 +1,20 @@
-import { Navbar } from "./components"
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import GlobalStyles from './globalStyles';
+import Parkplatz from './pages/Parkplatz';
+import Admin from './pages/Admin';
 
 
 function App() {
 
   return (
     <>
+    <Router> 
       <GlobalStyles/>
-      <Navbar/>
+      <Routes>
+        <Route exact path="/" element={<Parkplatz/>} />
+        <Route exact path="/admin" element={<Admin/>} />
+      </Routes>
+    </Router>
     </>
   )
 }

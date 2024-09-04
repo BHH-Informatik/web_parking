@@ -4,7 +4,7 @@ import { Navbar, UserList } from '../components'
 const Admin = () => {
   return (
     <>
-        <Navbar/>
+        {/* <Navbar/> */}
         <UserList/>
     </>
   )

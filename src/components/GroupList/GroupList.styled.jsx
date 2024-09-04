@@ -32,7 +32,7 @@ export const Title = styled.div`
     font-weight: bold;
 `;
 
-export const Row = styled.div`
+export const UserRow = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 10px;
@@ -43,7 +43,7 @@ export const Row = styled.div`
     }
 `;
 
-export const Cell = styled.div`
+export const UserCell = styled.div`
     width: 30%;
     color: #3D3D3D;
     line-height: 1.5;

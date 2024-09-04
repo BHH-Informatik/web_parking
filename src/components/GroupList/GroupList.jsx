@@ -1,13 +1,8 @@
 import React from 'react';
-import { Container, ListItemsContainer, MainContainer, Title, TitleContainer, Cell, Row } from './UserList.styled';
+import { Container, ListItemsContainer, MainContainer, Title, TitleContainer, Row, Cell } from './GroupList.styled';
 
 const UserList = () => {
     const users = [
-        { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
-        { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
-        { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
-        { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
-        { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
         { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
         { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
         { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },

@@ -4,8 +4,8 @@ import { Navbar, UserList } from '../components'
 const Admin = () => {
   return (
     <>
-        {/* <Navbar/> */}
-        <UserList/>
+        <Navbar/>
+        {/* <UserList/> */}
     </>
   )
 }

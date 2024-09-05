@@ -1,12 +1,25 @@
 import React from 'react'
-import { Navbar, UserList } from '../components'
-import { MainContainer } from '../components/UserList/UserList.styled'
+import { Navbar, ListComp } from '../components'
+import { MainContainer } from '../components/ListComp/ListComp.styled'
 
 const Admin = () => {
+  const data = [
+    { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
+    { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
+    { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
+    { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' }
+  ];
+
+  const title = [
+    { key: "name", name: 'Name'},
+    { key: "email", name: 'E-Mail'},
+    { key: "group", name: 'Gruppe'}
+  ];
+
   return (
     <>
         <MainContainer>
-          <UserList/>
+          <ListComp title={title} data={data}/>
         </MainContainer>
         <Navbar/>
     </>

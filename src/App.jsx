@@ -1,13 +1,20 @@
-import { Navbar } from "./components"
+import { Navbar, ParkplaetzeOverview } from "./components"
 import GlobalStyles from './globalStyles';
+import styled from 'styled-components';
 
+const AppContainer = styled.div`
+  display: flex;
+`;
 
 function App() {
 
   return (
     <>
       <GlobalStyles/>
-      <Navbar/>
+      <AppContainer>
+        <Navbar />
+        <ParkplaetzeOverview />
+      </AppContainer>
     </>
   )
 }

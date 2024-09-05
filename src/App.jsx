@@ -3,9 +3,6 @@ import GlobalStyles from './globalStyles';
 import Parkplatz from './pages/Parkplatz';
 import Admin from './pages/Admin';
 
-const AppContainer = styled.div`
-  display: flex;
-`;
 
 function App() {
 

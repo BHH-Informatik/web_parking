@@ -27,7 +27,7 @@ const Navbar = () => {
               <GrContact />
               <span>Kontakt</span>
           </SidebarLink>
-          <SidebarLink href="#">
+          <SidebarLink href="/admin">
               <CiViewList />
               <span>Admin Overview</span>
           </SidebarLink>

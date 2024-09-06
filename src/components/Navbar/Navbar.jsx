@@ -15,7 +15,7 @@ const Navbar = () => {
           <Icon />
         </IconContainer>
         <LinkContainer>
-          <SidebarLink href="#">
+          <SidebarLink href="/">
               <LuParkingSquare />
               <span>Parkplätze</span>
           </SidebarLink>

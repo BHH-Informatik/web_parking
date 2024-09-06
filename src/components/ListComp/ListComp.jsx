@@ -5,19 +5,20 @@ const ListComp = ({
         title,
         data
     }) => {
+        console.log(title, data);
     return (
         <MainContainer>
             <Container>
                 <TitleContainer>
-                    {title.map((col) => (
+                    {title && title.map((col) => (
                         <Title key={col.key}> {col.name} </Title>
                     ))}
                 </TitleContainer>
                 <ListItemsContainer>
                     {data.map((row, index) => (
                         <Row key={index}>
-                            {title.map((col) => (
-                                 <Cell key={col.key}> {row[col.key]} </Cell>
+                            {title && title.map((col) => (
+                                 <Cell key={col.key}> {row[col.key]+""} </Cell>
                             ))}
                         </Row>
                     ))}

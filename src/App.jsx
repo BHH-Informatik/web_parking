@@ -13,7 +13,6 @@ const PageContainer = styled.div`
 `;
 
 function App() {
-
   return (
     <>
     <Navbar/>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, ListItemsContainer, MainContainer, Title, TitleContainer, Cell, Row } from './ListComp.styled';
+import { Container, ListItemsContainer, Title, TitleContainer, Cell, Row } from './ListComp.styled';
 
 const ListComp = ({
         title,
@@ -7,7 +7,6 @@ const ListComp = ({
     }) => {
         console.log(title, data);
     return (
-        <MainContainer>
             <Container>
                 <TitleContainer>
                     {title && title.map((col) => (
@@ -24,7 +23,6 @@ const ListComp = ({
                     ))}
                 </ListItemsContainer>
             </Container>
-        </MainContainer>
     );
 }
 

@@ -1,28 +1,44 @@
 import React, { useState } from 'react';
-import { Navbar, ListComp } from '../components';
-import { MainContainer, Title, TitleContainer } from '../components/ListComp/ListComp.styled';
-import { Container } from '../components/ParkplaetzeOverview/ParkplaetzeOverview.styled';
+import { ListComp } from '../components';
+import { Container, Title } from '../components/ListComp/ListComp.styled';
+import styled from 'styled-components';
+
+const MainContainer = styled.div`
+    margin: 0 auto;
+    width: 90%;
+    display: flex;
+    height: 90vh;
+`
+
+const HeaderContainer = styled.div`
+    margin: 0 auto;
+    width: 90%;
+    display: flex;
+    align-items: start;
+
+    height: 10vh;
+`
 
 const Admin = () => {
-  // Definiere verschiedene Datensätze für die verschiedenen Titel
+
   const title = {
     users: [
-      {key:'name', name: 'Name'},
-      {key:'email', name: 'E-Mail'},
-      {key:'group', name: 'Gruppe'}
+      { key: 'name', name: 'Name' },
+      { key: 'email', name: 'E-Mail' },
+      { key: 'group', name: 'Gruppe' }
     ],
     groups: [
-      {key:'group',  name: 'Gruppe'},
-      {key:'description',  name: 'Bezeichnung'}
+      { key: 'group', name: 'Gruppe' },
+      { key: 'description', name: 'Bezeichnung' }
     ],
     parking: [
-      {key:'parkingSpot',  name: 'Pakplatz'},
-      {key:'available',  name: 'Status'}
+      { key: 'parkingSpot', name: 'Pakplatz' },
+      { key: 'available', name: 'Status' }
     ],
     bookings: [
-      {key:'user',  name: 'Nutzer'},
-      {key:'parkingSpot',  name: 'Parkplatz'},
-      {key:'date',  name: 'Datum'}
+      { key: 'user', name: 'Nutzer' },
+      { key: 'parkingSpot', name: 'Parkplatz' },
+      { key: 'date', name: 'Datum' }
     ]
   };
   const userData = [
@@ -48,7 +64,7 @@ const Admin = () => {
 
   // Zustand, um den aktuell ausgewählten Titel zu speichern
   const [selectedData, setSelectedData] = useState(userData);
-  
+
   // Definiere die Titel mit einem Klick-Handler
   const titles = [
     { key: 'users', name: 'Nutzer', data: userData },
@@ -58,7 +74,7 @@ const Admin = () => {
   ];
 
   const [selectedTitle, setSelectedTitle] = useState(titles[0]);
-  
+
   const handleTitleClick = (title) => {
     setSelectedData(title.data); // Ändere die angezeigten Daten basierend auf dem Titel
     setSelectedTitle(title); // Setze den ausgewählten Titel
@@ -68,15 +84,15 @@ const Admin = () => {
     <>
       <MainContainer>
         <Container>
-        <TitleContainer>
-          {titles.map((title) => (
-            <Title key={title.key} onClick={() => handleTitleClick(title)}>
-              {title.name}
-            </Title>
-          ))}
-        </TitleContainer>
-        <ListComp data={selectedData} title={title[selectedTitle.key]} />
-          </Container>
+          <HeaderContainer>
+            {titles.map((title) => (
+              <Title key={title.key} onClick={() => handleTitleClick(title)}>
+                {title.name}
+              </Title>
+            ))}
+          </HeaderContainer>
+          <ListComp data={selectedData} title={title[selectedTitle.key]} />
+        </Container>
       </MainContainer>
     </>
   );

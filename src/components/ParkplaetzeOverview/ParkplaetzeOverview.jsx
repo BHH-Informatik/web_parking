@@ -66,8 +66,10 @@ const ParkplaetzeOverview = () => {
 
     const filledTables = parkplatzGruppen.map(group => fillTable(group, 5, 2));
 
-    const handleClick = (name) => {
-        setSelectedParkplatz(name);
+    const handleClick = (name, status) => {
+        if (status !== 'gebucht') {
+            setSelectedParkplatz(name);
+        }
     };
 
     return (
@@ -103,7 +105,7 @@ const ParkplaetzeOverview = () => {
                                 {tableData.map((row, rowIndex) => (
                                     <TableRow key={rowIndex}>
                                         {row.map((cell, cellIndex) => (
-                                            <TableCell key={cellIndex} status={cell && cell.status} isSelected={selectedParkplatz === cell.name} onClick={() => handleClick(cell.name)}>
+                                            <TableCell key={cellIndex} status={cell && cell.status} isSelected={selectedParkplatz === cell.name} onClick={() => handleClick(cell.name, cell.status)}>
                                                 <span>{cell && cell.name}</span>
                                             </TableCell>
                                         ))}

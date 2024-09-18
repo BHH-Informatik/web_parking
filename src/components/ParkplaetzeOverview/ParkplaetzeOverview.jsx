@@ -19,7 +19,6 @@ const ParkplaetzeOverview = () => {
                 const response = await axios.get(`https://parking.enten.dev/api/parking_lots/${formattedDate}`);
                 setParkingLots(response.data.parking_lots);
                 setIsLoading(false);
-                console.log(parkingLots)
             } catch (error) {
                 console.error('Fehler beim Laden der Parkplatzdaten:', error);
                 setError('Fehler beim Laden der Daten');

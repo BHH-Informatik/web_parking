@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ListComp } from '../components';
-import { Container, Title } from '../components/ListComp/ListComp.styled';
 import styled from 'styled-components';
+import axios from 'axios';
 
 const MainContainer = styled.div`
     margin: 0 auto;
@@ -19,58 +19,83 @@ const HeaderContainer = styled.div`
     height: 10vh;
 `
 
+const Container = styled.div`
+    width: 100%;
+`;
+
+const Error = styled.p``
+
+const Title = styled.div`
+    color: #3D3D3D;
+    line-height: 1.5;
+    width: 30%;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover{
+    font-size: 1.1em;
+    }
+`;
+
 const Admin = () => {
+
+  const [user, setUser] = useState([]);
+  const [booking, setBooking] = useState([]);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const checkAPI = async () => {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const responseUser = await axios.get('https://parking.enten.dev/api/admin/user', {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+          const responseBooking = await axios.get('https://parking.enten.dev/api/admin/bookings', {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+          setUser(responseUser.data);
+          setBooking(responseBooking.data);
+        } catch (error) {
+          console.error('Token validation failed:', error);
+        }
+      } else {
+        setError(true);
+      }
+    };
+
+    checkAPI();
+  }, []);
 
   const title = {
     users: [
-      { key: 'name', name: 'Name' },
-      { key: 'email', name: 'E-Mail' },
-      { key: 'group', name: 'Gruppe' }
-    ],
-    groups: [
-      { key: 'group', name: 'Gruppe' },
-      { key: 'description', name: 'Bezeichnung' }
-    ],
-    parking: [
-      { key: 'parkingSpot', name: 'Pakplatz' },
-      { key: 'available', name: 'Status' }
+      { key: 'first_name', name: 'Vorname' },
+      { key: 'last_name', name: 'Nachname' },
+      { key: 'email', name: 'E-Mail' }
     ],
     bookings: [
-      { key: 'user', name: 'Nutzer' },
-      { key: 'parkingSpot', name: 'Parkplatz' },
-      { key: 'date', name: 'Datum' }
+      { key: 'user_id', name: 'Nutzer' },
+      { key: 'parking_lot_id', name: 'Parkplatz' },
+      { key: 'booking_date', name: 'Datum' },
+      { key: 'booking_start_time', name: 'Startzeit' },
+      { key: 'booking_end_time', name: 'Endzeit' }
     ]
   };
-  const userData = [
-    { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
-    { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' },
-    { name: 'Max Mustermann', email: 'max@mustermann.de', group: 'Gruppe 1' }
-  ];
-
-  const groupData = [
-    { group: 'Gruppe 1', description: 'Parkplatz-Administratoren' },
-    { group: 'Gruppe 2', description: 'Standardbenutzer' }
-  ];
-
-  const parkingData = [
-    { parkingSpot: 'A1', available: true },
-    { parkingSpot: 'B2', available: false }
-  ];
-
-  const bookingData = [
-    { user: 'Max Mustermann', parkingSpot: 'A1', date: '2024-09-01' },
-    { user: 'Max Mustermann', parkingSpot: 'B2', date: '2024-09-02' }
-  ];
 
   // Zustand, um den aktuell ausgewählten Titel zu speichern
-  const [selectedData, setSelectedData] = useState(userData);
+  const [selectedData, setSelectedData] = useState(user);
 
-  // Definiere die Titel mit einem Klick-Handler
   const titles = [
-    { key: 'users', name: 'Nutzer', data: userData },
-    { key: 'groups', name: 'Gruppe', data: groupData },
-    { key: 'parking', name: 'Parkplätze', data: parkingData },
-    { key: 'bookings', name: 'Buchungen', data: bookingData }
+    { key: 'users', name: 'Nutzer', data: user },
+    { key: 'bookings', name: 'Buchungen', data: booking }
   ];
 
   const [selectedTitle, setSelectedTitle] = useState(titles[0]);
@@ -92,6 +117,7 @@ const Admin = () => {
             ))}
           </HeaderContainer>
           <ListComp data={selectedData} title={title[selectedTitle.key]} />
+          {error && <Error>Keine Daten vorhanden</Error>}
         </Container>
       </MainContainer>
     </>

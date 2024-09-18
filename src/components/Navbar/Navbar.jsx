@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { FaCog } from 'react-icons/fa';
 import { LuParkingSquare } from "react-icons/lu";
 import { Icon, SidebarContainer, SidebarLink, ProfileLink, IconContainer, LinkContainer, ProfileContainer } from './Navbar.styled';
@@ -13,8 +13,11 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     await logout();
-    window.location.href = '/login';
   };
+
+  useEffect(() => {
+    console.log('isAuthenticated:', isAuthenticated);
+  }, [isAuthenticated]);
 
   return (
     <>
@@ -27,7 +30,7 @@ const Navbar = () => {
               <LuParkingSquare />
               <span>Parkplätze</span>
           </SidebarLink>
-          <SidebarLink href="#">
+          <SidebarLink href="/kalender">
               <SlCalender />
               <span>Kalender</span>
           </SidebarLink>

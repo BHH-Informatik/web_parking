@@ -5,6 +5,7 @@ import Parkplatz from './pages/Parkplatz';
 import Admin from './pages/Admin';
 import Kontakt from './pages/Kontakt';
 import Login from './pages/Login';
+import Kalender from './pages/Kalender';
 import { Navbar } from './components';
 import styled from 'styled-components';
 import Register from './pages/Register';
@@ -29,6 +30,7 @@ const AppRoutes = () => {
       <Route path="/" element={isAuthenticated ? <Parkplatz /> : <Navigate to="/login" />} />
       <Route path="/admin" element={isAuthenticated ? <Admin /> : <Navigate to="/login" />} />
       <Route path="/kontakt" element={isAuthenticated ? <Kontakt /> : <Navigate to="/login" />} />
+      <Route path="/kalender" element={isAuthenticated ? <Kalender /> : <Navigate to="/login" />} />
       <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
       <Route path="/register" element={<Register />} />
     </Routes>

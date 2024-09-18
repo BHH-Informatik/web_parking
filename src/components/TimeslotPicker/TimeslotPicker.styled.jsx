@@ -23,7 +23,16 @@ export const Timeslot = styled.div`
     padding: 5px 20px;
     background-color: #E6F5F6;
     cursor: pointer;
-`
+    border: ${(props) => {
+        if (props.isBlocked) {
+            return '2px solid #FC6D5C';
+        }
+        if (props.isSelected) {
+            return '2px solid #FFCC97';
+        }
+        return 'none';
+    }};
+`;
 
 export const Button = styled.button`
     margin: 3% 0 0 0;

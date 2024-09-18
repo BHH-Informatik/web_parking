@@ -64,7 +64,7 @@ export const Information = styled.p`
 export const ParkingOverviewContainer = styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 15%;
+    margin-top: 5%;
     gap: 25px;
 `;
 
@@ -98,10 +98,31 @@ export const TableCell = styled.td`
         border-radius: 15px;
         padding: 5px 20px;
         background-color: ${({ status, isSelected }) => {
-        if (isSelected) return '#FFCC97';
-        if (status === 'gebucht') return '#FDB5AD';
-        return '#E6F5F6';
+            if (status === 'FULL_DAY_BLOCKED') return '#FDB5AD';
+            if (isSelected) return '#FFCC97';
+            if (status === 'TIMERANGE_BLOCKED') return '#ADD8E6';
+            return '#E6F5F6';
         }};
         cursor: pointer;
     }
+`;
+
+export const DateNavigationContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5% 0 0 0;
+`;
+
+export const DateButton = styled.button`
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+`;
+
+export const DateDisplay = styled.span`
+    margin: 0 16px;
+    font-size: 18px;
+    font-weight: bold;
 `;

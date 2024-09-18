@@ -1,34 +1,34 @@
-import React, { useState } from 'react';
-import { Container, ParkplatzInformation, ParkplatzStatusContainer, StatusNumber, StatusText, ColorInformationContainer, ColorInformation, Color, Information, ParkingOverviewContainer, TableRow, TableCell, ParkingTable } from './ParkplaetzeOverview.styled';
+import React, { useState, useEffect } from 'react';
+import { Container, ParkplatzInformation, ParkplatzStatusContainer, StatusNumber, StatusText, ColorInformationContainer, ColorInformation, Color, Information, ParkingOverviewContainer, TableRow, TableCell, ParkingTable, DateNavigationContainer, DateButton, DateDisplay } from './ParkplaetzeOverview.styled';
 import TimeslotPicker from '../TimeslotPicker/TimeslotPicker';
-
-
+import axios from 'axios';
+import moment from 'moment';
+ 
 const ParkplaetzeOverview = () => {
     const [selectedParkplatz, setSelectedParkplatz] = useState(null);
+    const [parkingLots, setParkingLots] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [currentDate, setCurrentDate] = useState(moment().startOf('day'));
+    const [blockedTimes, setBlockedTimes] = useState({ start_time: null, end_time: null });
 
+    useEffect(() => {
+        const fetchParkingData = async () => {
+            try {
+                const formattedDate = currentDate.format('YYYY-MM-DD');
+                const response = await axios.get(`https://parking.enten.dev/api/parking_lots/${formattedDate}`);
+                setParkingLots(response.data.parking_lots);
+                setIsLoading(false);
+                console.log(parkingLots)
+            } catch (error) {
+                console.error('Fehler beim Laden der Parkplatzdaten:', error);
+                setError('Fehler beim Laden der Daten');
+                setIsLoading(false);
+            }
+        };
+        fetchParkingData();
+    }, [currentDate]);
 
-    const parkplatzDaten = [
-        { name: 'P1', status: 'frei' },
-        { name: 'P2', status: 'gebucht' },
-        { name: 'P3', status: 'frei' },
-        { name: 'P4', status: 'frei' },
-        { name: 'P5', status: 'gebucht' },
-        { name: 'P6', status: 'frei' },
-        { name: 'P7', status: 'frei' },
-        { name: 'P8', status: 'gebucht' },
-        { name: 'P9', status: 'frei' },
-        { name: 'P10', status: 'frei' },
-        { name: 'P11', status: 'frei' },
-        { name: 'P12', status: 'gebucht' },
-        { name: 'P13', status: 'frei' },
-        { name: 'P14', status: 'frei' },
-        { name: 'P15', status: 'frei' },
-        { name: 'P16', status: 'frei' },
-        { name: 'P17', status: 'frei' },
-        { name: 'P18', status: 'frei' },
-        { name: 'P19', status: 'frei' },
-        { name: 'P20', status: 'frei' },
-    ];
 
     const splitIntoPairs = (array) => {
         let pairs = [];
@@ -38,8 +38,6 @@ const ParkplaetzeOverview = () => {
         return pairs;
     };
 
-    const parkplatzPaare = splitIntoPairs(parkplatzDaten);
-
     const splitIntoGroups = (array, size) => {
         let groups = [];
         for (let i = 0; i < array.length; i += size) {
@@ -47,8 +45,6 @@ const ParkplaetzeOverview = () => {
         }
         return groups;
     };
-
-    const parkplatzGruppen = splitIntoGroups(parkplatzPaare, 5);
 
     const fillTable = (tableData, expectedRows, expectedColumns) => {
         const filledTable = [...tableData];
@@ -64,14 +60,68 @@ const ParkplaetzeOverview = () => {
         return filledTable;
     };
 
-    const filledTables = parkplatzGruppen.map(group => fillTable(group, 5, 2));
+    const handleBooking = async (bookingDetails) => {
+        try {
+            const token = localStorage.getItem('access_token');
 
-    const handleClick = (name, status) => {
-        if (status !== 'gebucht') {
-            setSelectedParkplatz(name);
+            await axios.post('https://parking.enten.dev/api/booking/reserve', bookingDetails, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            alert('Parkplatz erfolgreich gebucht!');
+            setSelectedParkplatz(null);
+        } catch (error) {
+            console.error('Fehler beim Buchen des Parkplatzes:', error);
+            alert('Fehler beim Buchen des Parkplatzes. Bitte versuche es später erneut.');
         }
     };
 
+    if (isLoading) {
+        return <div>Lade Parkplatzdaten...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
+
+    const parkplatzDaten = parkingLots.map(lot => ({
+        ...lot,
+    }));
+
+    const parkplatzPaare = splitIntoPairs(parkplatzDaten);
+    const parkplatzGruppen = splitIntoGroups(parkplatzPaare, 5);
+    const filledTables = parkplatzGruppen.map(group => fillTable(group, 5, 2));
+
+    const handleClick = (lot) => {
+        const { id, name, status, extras } = lot;
+
+        setSelectedParkplatz(id);
+
+        if (status === 'FULL_DAY_BLOCKED') {
+            setBlockedTimes({
+                start_time: '6:00',
+                end_time: '20:00'
+            });
+        } else if (status === 'TIMERANGE_BLOCKED' && extras) {
+            setBlockedTimes({
+                start_time: extras.start_time,
+                end_time: extras.end_time
+            });
+        } else {
+            setBlockedTimes({ start_time: null, end_time: null });
+        }
+    };
+    const handleDateChange = (direction) => {
+        setCurrentDate(prevDate => {
+            const newDate = direction === 'prev' ? prevDate.clone().subtract(1, 'day') : prevDate.clone().add(1, 'day');
+            setSelectedParkplatz(null);
+            return newDate;
+        });
+    };
+      
     return (
         <>
             <Container>
@@ -98,6 +148,12 @@ const ParkplaetzeOverview = () => {
                     </ColorInformationContainer>
                 </ParkplatzInformation>
 
+                <DateNavigationContainer>
+                    <DateButton onClick={() => handleDateChange('prev')}>{'<'}</DateButton>
+                    <DateDisplay>{currentDate.format('YYYY-MM-DD')}</DateDisplay>
+                    <DateButton onClick={() => handleDateChange('next')}>{'>'}</DateButton>
+                </DateNavigationContainer>
+
                 <ParkingOverviewContainer>
                     {filledTables.map((tableData, index) => (
                         <ParkingTable key={index}>
@@ -105,7 +161,7 @@ const ParkplaetzeOverview = () => {
                                 {tableData.map((row, rowIndex) => (
                                     <TableRow key={rowIndex}>
                                         {row.map((cell, cellIndex) => (
-                                            <TableCell key={cellIndex} status={cell && cell.status} isSelected={selectedParkplatz === cell.name} onClick={() => handleClick(cell.name, cell.status)}>
+                                            <TableCell key={cellIndex} status={cell && cell.status} isSelected={selectedParkplatz === cell.id} onClick={() => handleClick(cell)}>
                                                 <span>{cell && cell.name}</span>
                                             </TableCell>
                                         ))}
@@ -115,7 +171,7 @@ const ParkplaetzeOverview = () => {
                         </ParkingTable>
                     ))}
                 </ParkingOverviewContainer>
-                <TimeslotPicker/>
+                <TimeslotPicker selectedParkplatz={selectedParkplatz} bookingDate={currentDate.format('YYYY-MM-DD')} blockedTimes={blockedTimes} onBooking={handleBooking} />
             </Container>
 
         </>

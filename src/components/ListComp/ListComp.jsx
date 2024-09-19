@@ -5,7 +5,7 @@ const ListComp = ({
         title,
         data
     }) => {
-        console.log(title, data);
+        //console.log(title, data);
     return (
             <Container>
                 <TitleContainer>

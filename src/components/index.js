@@ -6,3 +6,4 @@ export { default as Kontaktformular } from './Kontaktformular/Kontaktformular';
 export { default as LoginFormular } from './LoginFormular/LoginFormular';
 export { default as RegisterFormular } from './RegisterFormular/RegisterFormular';
 export { default as KalenderContainer } from './KalenderContainer/KalenderContainer';
+export { default as AdminList } from './AdminList/AdminList';

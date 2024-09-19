@@ -8,6 +8,7 @@ const MainContainer = styled.div`
     width: 90%;
     display: flex;
     height: 90vh;
+    align-items: center;
 `;
 
 const HeaderContainer = styled.div`
@@ -16,6 +17,7 @@ const HeaderContainer = styled.div`
     display: flex;
     align-items: start;
     height: 10vh;
+    justify-content: center;
 `;
 
 const Container = styled.div`
@@ -30,9 +32,33 @@ const Title = styled.div`
     width: 30%;
     font-weight: bold;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
 
-    &:hover{
+    &:hover {
         font-size: 1.1em;
+    }
+`;
+
+const PaginationContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    margin: 5% 0;
+    align-items: center;
+`;
+
+const PageButton = styled.button`
+    margin: 0 3% 0 3%;
+    padding: 10px 20px;
+    background-color: #FC6D5C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:disabled {
+        background-color: #aaa;
+        cursor: not-allowed;
     }
 `;
 
@@ -40,7 +66,11 @@ const Admin = () => {
   const [user, setUser] = useState([]);
   const [booking, setBooking] = useState([]);
   const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true); // Ladezustand hinzufügen
+  const [loading, setLoading] = useState(true);
+
+  // Paging States
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(15); // Anzahl der Elemente pro Seite
 
   useEffect(() => {
     const checkAPI = async () => {
@@ -49,25 +79,29 @@ const Admin = () => {
         try {
           const responseUser = await axios.get('https://parking.enten.dev/api/admin/user', {
             headers: {
-              'Authorization': `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
-              'Accept': 'application/json',
+              Accept: 'application/json',
             },
           });
           const responseBooking = await axios.get('https://parking.enten.dev/api/admin/bookings', {
             headers: {
-              'Authorization': `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
-              'Accept': 'application/json',
+              Accept: 'application/json',
             },
           });
+          console.log(responseUser.data);
           setUser(responseUser.data.users); // Stelle sicher, dass 'users' korrekt gesetzt wird
           setBooking(responseBooking.data.bookings || []); // Buchungen setzen oder leeres Array
-          setLoading(false); // Ladezustand beenden, sobald die Daten geladen sind
+
+          // Setze die User-Daten initial in selectedData
+          setSelectedData(responseUser.data.users); // Initialisiert die User-Daten
+          setLoading(false); // Ladezustand beenden
         } catch (error) {
           console.error('Token validation failed:', error);
           setError(true);
-          setLoading(false); // Ladezustand beenden, auch wenn ein Fehler auftritt
+          setLoading(false); // Ladezustand beenden
         }
       } else {
         setError(true);
@@ -95,7 +129,7 @@ const Admin = () => {
 
   // Zustand, um den aktuell ausgewählten Titel zu speichern
   const [selectedData, setSelectedData] = useState([]);
-  const [selectedTitle, setSelectedTitle] = useState('users'); // Standard auf 'users' setzen
+  const [selectedTitle, setSelectedTitle] = useState('users'); // Nutzer standardmäßig auswählen
 
   const titles = [
     { key: 'users', name: 'Nutzer', data: user },
@@ -105,6 +139,27 @@ const Admin = () => {
   const handleTitleClick = (title) => {
     setSelectedData(title.data); // Ändere die angezeigten Daten basierend auf dem Titel
     setSelectedTitle(title.key); // Setze den ausgewählten Titel
+    setCurrentPage(1); // Setze die aktuelle Seite zurück
+  };
+
+  // Berechne die Daten, die auf der aktuellen Seite angezeigt werden sollen
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = selectedData.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Berechne die Gesamtanzahl der Seiten
+  const totalPages = Math.ceil(selectedData.length / itemsPerPage);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   // Ladeanzeige, solange die Daten noch geladen werden
@@ -123,8 +178,19 @@ const Admin = () => {
               </Title>
             ))}
           </HeaderContainer>
-          <ListComp data={selectedData.length > 0 ? selectedData : user} title={title[selectedTitle]} />
+          <ListComp data={currentItems} title={title[selectedTitle]} />
           {error && <Error>Keine Daten vorhanden</Error>}
+
+          {/* Paginierung */}
+          <PaginationContainer>
+            <PageButton onClick={prevPage} disabled={currentPage === 1}>
+              Zurück
+            </PageButton>
+            <span>Seite {currentPage} von {totalPages}</span>
+            <PageButton onClick={nextPage} disabled={currentPage === totalPages}>
+              Weiter
+            </PageButton>
+          </PaginationContainer>
         </Container>
       </MainContainer>
     </>

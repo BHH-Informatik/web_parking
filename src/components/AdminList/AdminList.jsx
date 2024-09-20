@@ -36,7 +36,7 @@ const AdminComp = () => {
               Accept: 'application/json',
             },
           });
-          setUser(responseUser.data.users);                 // 'users' korrekt setzten
+          setUser(responseUser.data.users);                 // 'users' korrekt setzen
           setBooking(responseBooking.data.bookings || []);  // Buchungen setzen oder leeres Array
           setSelectedData(responseUser.data.users);         // Setze die User-Daten initial in selectedData
           setLoading(false);
@@ -74,29 +74,33 @@ const AdminComp = () => {
     { key: 'bookings', name: 'Buchungen', data: booking },
   ];
 
-  // Bearbeiten-Funktion
-  const handleEdit = (index, newData) => {
-    const updatedData = [...selectedData];
-    updatedData[index] = newData;
-    setSelectedData(updatedData);
+  // Löschen-Funktion (mit API-Aufruf)
+  const handleDelete = async (index) => {
+    const token = localStorage.getItem('access_token');
+    const userId = selectedData[index].id;  // Annahme: 'id' ist der Schlüssel für die User-ID
 
-    // Falls du diese Daten auch im Backend speichern willst, kannst du hier einen PUT-Request hinzufügen
-  };
+    try {
+      // DELETE-Anfrage an die API senden
+      const response = await axios.delete(`https://parking.enten.dev/api/admin/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
 
-  // Löschen-Funktion
-  const handleDelete = (index) => {
-    const updatedData = [...selectedData];
-    updatedData.splice(index, 1); // Entfernt die Zeile an der Stelle `index`
-    setSelectedData(updatedData);
+      // Erfolgreich gelöscht: Nachricht anzeigen und die lokale Daten aktualisieren
+      if (response.status === 200) {
+        console.log('User successfully deleted:', response.data.message);
 
-    // Falls du diese Änderung im Backend speichern willst, kannst du hier einen DELETE-Request hinzufügen
-  };
-
-  // Hinzufügen-Funktion
-  const handleAdd = (newData) => {
-    setSelectedData([...selectedData, newData]);
-
-    // Falls du diese Daten im Backend speichern willst, kannst du hier einen POST-Request hinzufügen
+        // Entferne den Benutzer aus der lokalen Datenquelle
+        const updatedData = [...selectedData];
+        updatedData.splice(index, 1); // Entfernt die Zeile an der Stelle `index`
+        setSelectedData(updatedData);
+      }
+    } catch (error) {
+      console.error('Deletion of user failed:', error.response?.data || error.message);
+    }
   };
 
   const handleTitleClick = (title) => {
@@ -144,9 +148,7 @@ const AdminComp = () => {
           <ListComp
             data={currentItems}
             title={title[selectedTitle]}
-            onEdit={handleEdit}
             onDelete={handleDelete}
-            onAdd={handleAdd}
           />
           {error && <Error>Keine Daten vorhanden</Error>}
 

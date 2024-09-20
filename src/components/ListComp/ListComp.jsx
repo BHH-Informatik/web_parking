@@ -3,7 +3,13 @@ import { Container, ListItemsContainer, Title, TitleContainer, Cell, Row, Button
 
 const ListComp = ({ title, data, onEdit, onDelete, onAdd }) => {
   const [editIndex, setEditIndex] = useState(null); // Zum Verfolgen, welche Zeile bearbeitet wird
-  const [newData, setNewData] = useState({}); // Für das Hinzufügen neuer Daten
+  const [newData, setNewData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
+  }); // Für das Hinzufügen neuer Daten
   const [editableRow, setEditableRow] = useState({}); // Für das Bearbeiten von Zeilen
 
   // Bearbeiten einer Zeile aktivieren
@@ -31,7 +37,13 @@ const ListComp = ({ title, data, onEdit, onDelete, onAdd }) => {
   // Neue Zeile hinzufügen
   const handleAddClick = () => {
     onAdd(newData); // onAdd-Funktion aufrufen, um neue Daten hinzuzufügen
-    setNewData({});
+    setNewData({
+      first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
+      password_confirmation: '',
+    }); // Felder zurücksetzen
   };
 
   return (
@@ -70,17 +82,45 @@ const ListComp = ({ title, data, onEdit, onDelete, onAdd }) => {
         ))}
       </ListItemsContainer>
 
-      {/* Hinzufügen eines neuen Eintrags */}
+      {/* Formular zum Hinzufügen eines neuen Nutzers */}
       <Row>
-        {title && title.map((col) => (
-          <Cell key={col.key}>
-            <Input
-              value={newData[col.key] || ""}
-              onChange={(e) => handleNewDataChange(e, col.key)}
-              placeholder={`Neuer ${col.name}`}
-            />
-          </Cell>
-        ))}
+        <Cell>
+          <Input
+            value={newData.first_name}
+            onChange={(e) => handleNewDataChange(e, 'first_name')}
+            placeholder="Vorname"
+          />
+        </Cell>
+        <Cell>
+          <Input
+            value={newData.last_name}
+            onChange={(e) => handleNewDataChange(e, 'last_name')}
+            placeholder="Nachname"
+          />
+        </Cell>
+        <Cell>
+          <Input
+            value={newData.email}
+            onChange={(e) => handleNewDataChange(e, 'email')}
+            placeholder="E-Mail"
+          />
+        </Cell>
+        <Cell>
+          <Input
+            value={newData.password}
+            type="password"
+            onChange={(e) => handleNewDataChange(e, 'password')}
+            placeholder="Passwort"
+          />
+        </Cell>
+        <Cell>
+          <Input
+            value={newData.password_confirmation}
+            type="password"
+            onChange={(e) => handleNewDataChange(e, 'password_confirmation')}
+            placeholder="Passwort bestätigen"
+          />
+        </Cell>
         <Cell>
           <Button onClick={handleAddClick}>Hinzufügen</Button>
         </Cell>

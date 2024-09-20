@@ -30,9 +30,15 @@ export const Title = styled.div`
     cursor: pointer;
     display: flex;
     justify-content: center;
+    font-size: 1.4em;
+    align-items: center;
+    padding: 10px;
 
     &:hover {
-        font-size: 1.1em;
+        background-color: #FC6D5C;
+        color: white;
+        border-radius: 15px;
+        box-shadow: 3px 4px 20px 3px rgba(0, 0, 0, 0.35);
     }
 `;
 
@@ -51,7 +57,15 @@ export const PageButton = styled.button`
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 
+    &:hover {
+        background-color: #e05a48;
+    }
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(252, 109, 92, 0.4);
+    }
     &:disabled {
         background-color: #aaa;
         cursor: not-allowed;

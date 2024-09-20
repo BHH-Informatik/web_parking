@@ -3,7 +3,7 @@ import { Container, Error, HeaderContainer, MainContainer, PageButton, Paginatio
 import axios from 'axios';
 import ListComp from '../ListComp/ListComp';
 
-const AdminComp = () => {
+const AdminList = () => {
   const [user, setUser] = useState([]);
   const [booking, setBooking] = useState([]);
   const [error, setError] = useState(false);
@@ -11,7 +11,7 @@ const AdminComp = () => {
 
   // Paging States
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(15); // Anzahl der Elemente pro Seite
+  const [itemsPerPage] = useState(12); // Anzahl der Elemente pro Seite
 
   // Zustand, um den aktuell ausgewählten Titel zu speichern
   const [selectedData, setSelectedData] = useState([]);
@@ -74,7 +74,38 @@ const AdminComp = () => {
     { key: 'bookings', name: 'Buchungen', data: booking },
   ];
 
-  // Bearbeiten-Funktion
+  // Funktion zum Hinzufügen eines neuen Nutzers
+  const handleAdd = async (newUser) => {
+    const token = localStorage.getItem('access_token');
+    try {
+      // POST-Anfrage an die API senden
+      const response = await axios.post('https://parking.enten.dev/api/admin/user', newUser, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+
+      // Erfolgreich erstellt: Nachricht anzeigen und die lokalen Daten aktualisieren
+      if (response.status === 201) {
+        console.log('User successfully created:', response.data);
+
+        // Füge den neuen Benutzer zu den lokalen Daten hinzu
+        setSelectedData([...selectedData, response.data.user]);
+      }
+    } catch (error) {
+      console.error('User creation failed:', error.response?.data || error.message);
+    }
+  };
+
+  const handleTitleClick = (title) => {
+    setSelectedData(title.data);  // Ändere die angezeigten Daten basierend auf dem Titel
+    setSelectedTitle(title.key);  // Setze den ausgewählten Titel
+    setCurrentPage(1);            // Setze die aktuelle Seite zurück
+  };
+
+  // Bearbeiten-Funktion (mit API-Aufruf)
   const handleEdit = async (index, newData) => {
     const token = localStorage.getItem('access_token');
     const userId = selectedData[index].id;  // Annahme: 'id' ist der Schlüssel für die User-ID
@@ -103,7 +134,6 @@ const AdminComp = () => {
     }
   };
 
-  // Löschen-Funktion (mit API-Aufruf)
   const handleDelete = async (index) => {
     const token = localStorage.getItem('access_token');
     const userId = selectedData[index].id;  // Annahme: 'id' ist der Schlüssel für die User-ID
@@ -130,12 +160,6 @@ const AdminComp = () => {
     } catch (error) {
       console.error('Deletion of user failed:', error.response?.data || error.message);
     }
-  };
-
-  const handleTitleClick = (title) => {
-    setSelectedData(title.data);  // Ändere die angezeigten Daten basierend auf dem Titel
-    setSelectedTitle(title.key);  // Setze den ausgewählten Titel
-    setCurrentPage(1);            // Setze die aktuelle Seite zurück
   };
 
   // Berechne die Daten, die auf der aktuellen Seite angezeigt werden sollen
@@ -179,6 +203,7 @@ const AdminComp = () => {
             title={title[selectedTitle]}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onAdd={handleAdd}  // Hinzufügen eines neuen Benutzers
           />
           {error && <Error>Keine Daten vorhanden</Error>}
 
@@ -198,4 +223,4 @@ const AdminComp = () => {
   );
 };
 
-export default AdminComp;
+export default AdminList;

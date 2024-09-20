@@ -21,7 +21,7 @@ export const Timeslot = styled.div`
     display: inline-block;
     border-radius: 15px;
     padding: 5px 20px;
-    background-color: #E6F5F6;
+    background-color: #C0DBD7;
     cursor: pointer;
     border: ${(props) => {
         if (props.isBlocked) {

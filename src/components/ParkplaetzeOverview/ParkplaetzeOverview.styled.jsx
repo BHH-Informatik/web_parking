@@ -16,7 +16,7 @@ export const ParkplatzStatusContainer = styled.div`
     display: flex;
     align-items: center;
     gap: 20px;
-    background-color: #E6F5F6;
+    background-color: #C0DBD7;
     border-radius: 15px;
     padding: 1% 3%;
 `
@@ -80,7 +80,7 @@ export const TableRow = styled.tr`
 
 
 export const TableCell = styled.td`
-    border: 3px solid #E6F5F6;
+    border: 3px solid #E3CBB3;
     text-align: left;
     padding: 2% 0 2% 0;
     text-align: center;
@@ -98,10 +98,10 @@ export const TableCell = styled.td`
         border-radius: 15px;
         padding: 5px 20px;
         background-color: ${({ status, isSelected }) => {
-            if (status === 'FULL_DAY_BLOCKED') return '#FDB5AD';
-            if (isSelected) return '#FFCC97';
-            if (status === 'TIMERANGE_BLOCKED') return '#ADD8E6';
-            return '#E6F5F6';
+            if (status === 'FULL_DAY_BLOCKED') return '#FDB0A4';
+            if (isSelected) return '#FFE0C1';
+            if (status === 'TIMERANGE_BLOCKED') return '#C0DBD7';
+            return '#DAD9D6';
         }};
         cursor: pointer;
     }

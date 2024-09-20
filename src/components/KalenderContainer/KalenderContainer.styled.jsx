@@ -32,7 +32,7 @@ export const CalendarWrapper = styled.div`
         border: none;
         width: 100%;
         font-size: 1.2rem;
-
+        background-color: #FFF4E9;
     }
 
     .react-calendar__navigation {

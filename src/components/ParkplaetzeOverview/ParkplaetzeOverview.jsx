@@ -133,15 +133,15 @@ const ParkplaetzeOverview = () => {
                     </ParkplatzStatusContainer>
                     <ColorInformationContainer>
                         <ColorInformation>
-                            <Color color="#FDB5AD" />
+                            <Color color="#FDB0A4" />
                             <Information>Gebucht</Information>
                         </ColorInformation>
                         <ColorInformation>
-                            <Color color="#E6F5F6" />
+                            <Color color="#C0DBD7" />
                             <Information>Frei</Information>
                         </ColorInformation>
                         <ColorInformation>
-                            <Color color="#FFCC97" />
+                            <Color color="#FFE0C1" />
                             <Information>Deine Auswahl</Information>
                         </ColorInformation>
                     </ColorInformationContainer>

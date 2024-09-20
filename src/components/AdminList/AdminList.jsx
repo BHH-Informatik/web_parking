@@ -74,6 +74,35 @@ const AdminComp = () => {
     { key: 'bookings', name: 'Buchungen', data: booking },
   ];
 
+  // Bearbeiten-Funktion
+  const handleEdit = async (index, newData) => {
+    const token = localStorage.getItem('access_token');
+    const userId = selectedData[index].id;  // Annahme: 'id' ist der Schlüssel für die User-ID
+
+    try {
+      // PUT-Anfrage an die API senden
+      const response = await axios.put(`https://parking.enten.dev/api/admin/user/${userId}`, newData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+
+      // Erfolgreich bearbeitet: Nachricht anzeigen und die lokale Daten aktualisieren
+      if (response.status === 200) {
+        console.log('User successfully updated:', response.data);
+
+        // Aktualisiere den Benutzer in der lokalen Datenquelle
+        const updatedData = [...selectedData];
+        updatedData[index] = response.data; // Aktualisiere die Daten mit der Antwort von der API
+        setSelectedData(updatedData);
+      }
+    } catch (error) {
+      console.error('User update failed:', error.response?.data || error.message);
+    }
+  };
+
   // Löschen-Funktion (mit API-Aufruf)
   const handleDelete = async (index) => {
     const token = localStorage.getItem('access_token');
@@ -148,6 +177,7 @@ const AdminComp = () => {
           <ListComp
             data={currentItems}
             title={title[selectedTitle]}
+            onEdit={handleEdit}
             onDelete={handleDelete}
           />
           {error && <Error>Keine Daten vorhanden</Error>}

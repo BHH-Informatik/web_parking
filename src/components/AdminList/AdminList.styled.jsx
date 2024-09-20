@@ -4,7 +4,6 @@ export const MainContainer = styled.div`
     margin: 0 auto;
     width: 90%;
     display: flex;
-    height: 90vh;
     align-items: center;
 `;
 

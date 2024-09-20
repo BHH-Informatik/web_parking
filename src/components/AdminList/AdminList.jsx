@@ -13,6 +13,10 @@ const AdminComp = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(15); // Anzahl der Elemente pro Seite
 
+  // Zustand, um den aktuell ausgewählten Titel zu speichern
+  const [selectedData, setSelectedData] = useState([]);
+  const [selectedTitle, setSelectedTitle] = useState('users'); // Nutzer standardmäßig auswählen
+
   useEffect(() => {
     const checkAPI = async () => {
       const token = localStorage.getItem('access_token');
@@ -32,7 +36,6 @@ const AdminComp = () => {
               Accept: 'application/json',
             },
           });
-          console.log(responseUser.data);
           setUser(responseUser.data.users);                 // 'users' korrekt setzten
           setBooking(responseBooking.data.bookings || []);  // Buchungen setzen oder leeres Array
           setSelectedData(responseUser.data.users);         // Setze die User-Daten initial in selectedData
@@ -66,14 +69,35 @@ const AdminComp = () => {
     ],
   };
 
-  // Zustand, um den aktuell ausgewählten Titel zu speichern
-  const [selectedData, setSelectedData] = useState([]);
-  const [selectedTitle, setSelectedTitle] = useState('users'); // Nutzer standardmäßig auswählen
-
   const titles = [
     { key: 'users', name: 'Nutzer', data: user },
     { key: 'bookings', name: 'Buchungen', data: booking },
   ];
+
+  // Bearbeiten-Funktion
+  const handleEdit = (index, newData) => {
+    const updatedData = [...selectedData];
+    updatedData[index] = newData;
+    setSelectedData(updatedData);
+
+    // Falls du diese Daten auch im Backend speichern willst, kannst du hier einen PUT-Request hinzufügen
+  };
+
+  // Löschen-Funktion
+  const handleDelete = (index) => {
+    const updatedData = [...selectedData];
+    updatedData.splice(index, 1); // Entfernt die Zeile an der Stelle `index`
+    setSelectedData(updatedData);
+
+    // Falls du diese Änderung im Backend speichern willst, kannst du hier einen DELETE-Request hinzufügen
+  };
+
+  // Hinzufügen-Funktion
+  const handleAdd = (newData) => {
+    setSelectedData([...selectedData, newData]);
+
+    // Falls du diese Daten im Backend speichern willst, kannst du hier einen POST-Request hinzufügen
+  };
 
   const handleTitleClick = (title) => {
     setSelectedData(title.data);  // Ändere die angezeigten Daten basierend auf dem Titel
@@ -117,7 +141,13 @@ const AdminComp = () => {
               </Title>
             ))}
           </HeaderContainer>
-          <ListComp data={currentItems} title={title[selectedTitle]} />
+          <ListComp
+            data={currentItems}
+            title={title[selectedTitle]}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onAdd={handleAdd}
+          />
           {error && <Error>Keine Daten vorhanden</Error>}
 
           {/* Paginierung */}

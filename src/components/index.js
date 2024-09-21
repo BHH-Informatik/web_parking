@@ -7,3 +7,5 @@ export { default as LoginFormular } from './LoginFormular/LoginFormular';
 export { default as RegisterFormular } from './RegisterFormular/RegisterFormular';
 export { default as KalenderContainer } from './KalenderContainer/KalenderContainer';
 export { default as AdminList } from './AdminList/AdminList';
+export { default as AdminUser } from './AdminUser/AdminUser';
+export { default as AdminBooking } from './AdminBooking/AdminBooking';

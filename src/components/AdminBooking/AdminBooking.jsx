@@ -7,6 +7,12 @@ const AdminBooking = () => {
   const [booking, setBooking] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [newBooking, setNewBooking] = useState({
+    parking_lot_id: '',
+    booking_date: '',
+    start_time: '',
+    end_time: '',
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
@@ -49,9 +55,15 @@ const AdminBooking = () => {
     ],
   };
 
+  // Berechne den tatsächlichen Index der Buchung in der Gesamtliste
+  const getRealIndex = (index) => {
+    return index + (currentPage - 1) * itemsPerPage;
+  };
+
   const handleDelete = async (index) => {
+    const realIndex = getRealIndex(index);
     const token = localStorage.getItem('access_token');
-    const bookingId = booking[index].id; // Annahme: 'id' ist der Schlüssel für die Buchung-ID
+    const bookingId = booking[realIndex].id;
 
     try {
       const response = await axios.delete(`https://parking.enten.dev/api/booking/${bookingId}`, {
@@ -63,16 +75,17 @@ const AdminBooking = () => {
       });
 
       if (response.status === 200) {
-        console.log('Booking successfully deleted:', response.data.message);
-
-        // Entferne die Buchung aus den lokalen Daten
         const updatedData = [...booking];
-        updatedData.splice(index, 1);
+        updatedData.splice(realIndex, 1);
         setBooking(updatedData);
       }
     } catch (error) {
       console.error('Booking deletion failed:', error.response?.data || error.message);
     }
+  };
+
+  const handleNewBookingChange = (e, key) => {
+    setNewBooking({ ...newBooking, [key]: e.target.value });
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -104,9 +117,10 @@ const AdminBooking = () => {
           <ListComp
             data={currentItems}
             title={title.bookings}
-            onEdit={() => {}}
-            onDelete={handleDelete}  // Delete-Funktion hier übergeben
+            onDelete={handleDelete}
             onAdd={() => {}}
+            newBooking={newBooking}
+            onNewBookingChange={handleNewBookingChange}
           />
           {error && <Error>Keine Daten vorhanden</Error>}
 

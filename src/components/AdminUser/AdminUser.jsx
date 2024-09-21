@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Error, HeaderContainer, MainContainer, PageButton, PaginationContainer, Title } from './AdminUser.styled';
+import { Container, Error, MainContainer, PageButton, PaginationContainer } from './AdminUser.styled';
 import axios from 'axios';
 import ListComp from '../ListComp/ListComp';
 
@@ -7,10 +7,14 @@ const AdminUser = () => {
   const [user, setUser] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [newUser, setNewUser] = useState({
+    first_name: '',
+    last_name: '',
+    email: ''
+  });
 
-  // Paging States
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(12); // Anzahl der Elemente pro Seite
+  const [itemsPerPage] = useState(12);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -24,7 +28,7 @@ const AdminUser = () => {
               Accept: 'application/json',
             },
           });
-          setUser(response.data.users); // Nutzer setzen
+          setUser(response.data.users);
           setLoading(false);
         } catch (error) {
           console.error('Token validation failed:', error);
@@ -40,18 +44,15 @@ const AdminUser = () => {
     fetchUsers();
   }, []);
 
-  const title = {
-    users: [
-      { key: 'first_name', name: 'Vorname' },
-      { key: 'last_name', name: 'Nachname' },
-      { key: 'email', name: 'E-Mail' },
-    ],
+  const getRealIndex = (index) => {
+    return index + (currentPage - 1) * itemsPerPage;
   };
 
-  const handleAdd = async (newUser) => {
+
+  const handleAddUser = async (newUserData) => {
     const token = localStorage.getItem('access_token');
     try {
-      const response = await axios.post('https://parking.enten.dev/api/admin/user', newUser, {
+      const response = await axios.post('https://parking.enten.dev/api/admin/user', newUserData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -67,32 +68,13 @@ const AdminUser = () => {
     }
   };
 
-  const handleEdit = async (index, newData) => {
-    const token = localStorage.getItem('access_token');
-    const userId = user[index].id; // Annahme: 'id' ist der Schlüssel für die User-ID
-
-    try {
-      const response = await axios.put(`https://parking.enten.dev/api/admin/user/${userId}`, newData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      });
-
-      if (response.status === 200) {
-        const updatedData = [...user];
-        updatedData[index] = response.data; // Aktualisiere die Daten
-        setUser(updatedData);
-      }
-    } catch (error) {
-      console.error('User update failed:', error.response?.data || error.message);
-    }
+  const handleNewUserChange = (e, key) => {
+    setNewUser({ ...newUser, [key]: e.target.value });
   };
 
   const handleDelete = async (index) => {
     const token = localStorage.getItem('access_token');
-    const userId = user[index].id;
+    const userId = user[getRealIndex(index)].id;
 
     try {
       const response = await axios.delete(`https://parking.enten.dev/api/admin/user/${userId}`, {
@@ -105,7 +87,7 @@ const AdminUser = () => {
 
       if (response.status === 200) {
         const updatedData = [...user];
-        updatedData.splice(index, 1);
+        updatedData.splice(getRealIndex(index), 1);
         setUser(updatedData);
       }
     } catch (error) {
@@ -141,10 +123,12 @@ const AdminUser = () => {
         <Container>
           <ListComp
             data={currentItems}
-            title={title.users}
-            onEdit={handleEdit}
+            title={[{ key: 'first_name', name: 'Vorname' }, { key: 'last_name', name: 'Nachname' }, { key: 'email', name: 'E-Mail' }]}
             onDelete={handleDelete}
-            onAdd={handleAdd}
+            onAdd={handleAddUser}
+            newEntry={newUser}
+            onNewEntryChange={handleNewUserChange}
+            type="user"
           />
           {error && <Error>Keine Daten vorhanden</Error>}
 

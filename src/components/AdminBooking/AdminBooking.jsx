@@ -7,12 +7,6 @@ const AdminBooking = () => {
   const [booking, setBooking] = useState([]);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [newBooking, setNewBooking] = useState({
-    parking_lot_id: '',
-    booking_date: '',
-    start_time: '',
-    end_time: '',
-  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(12);
@@ -45,16 +39,6 @@ const AdminBooking = () => {
     fetchBookings();
   }, []);
 
-  const title = {
-    bookings: [
-      { key: 'user_id', name: 'Nutzer' },
-      { key: 'parking_lot_id', name: 'Parkplatz' },
-      { key: 'booking_date', name: 'Datum' },
-      { key: 'booking_start_time', name: 'Startzeit' },
-      { key: 'booking_end_time', name: 'Endzeit' },
-    ],
-  };
-
   // Berechne den tatsächlichen Index der Buchung in der Gesamtliste
   const getRealIndex = (index) => {
     return index + (currentPage - 1) * itemsPerPage;
@@ -82,10 +66,6 @@ const AdminBooking = () => {
     } catch (error) {
       console.error('Booking deletion failed:', error.response?.data || error.message);
     }
-  };
-
-  const handleNewBookingChange = (e, key) => {
-    setNewBooking({ ...newBooking, [key]: e.target.value });
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -116,11 +96,14 @@ const AdminBooking = () => {
         <Container>
           <ListComp
             data={currentItems}
-            title={title.bookings}
+            title={[
+              { key: 'parking_lot_id', name: 'Parkplatz' },
+              { key: 'booking_date', name: 'Datum' },
+              { key: 'booking_start_time', name: 'Startzeit' },
+              { key: 'booking_end_time', name: 'Endzeit' },
+            ]}
             onDelete={handleDelete}
-            onAdd={() => {}}
-            newBooking={newBooking}
-            onNewBookingChange={handleNewBookingChange}
+            type="booking"
           />
           {error && <Error>Keine Daten vorhanden</Error>}
 

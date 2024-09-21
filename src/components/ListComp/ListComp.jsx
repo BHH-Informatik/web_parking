@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Container, ListItemsContainer, Title, TitleContainer, Cell, Row, Button, Input } from './ListComp.styled';
 
-const ListComp = ({ title, data, onEdit, onDelete, onAdd }) => {
+const ListComp = ({ title, data, onEdit, onDelete, onAdd, type }) => {
   const [editIndex, setEditIndex] = useState(null); // Zum Verfolgen, welche Zeile bearbeitet wird
   const [newData, setNewData] = useState({
     first_name: '',
@@ -71,10 +71,12 @@ const ListComp = ({ title, data, onEdit, onDelete, onAdd }) => {
               </Cell>
             ))}
             <Cell>
-              {editIndex === index ? (
-                <Button onClick={() => handleSaveClick(index)}>Speichern</Button>
-              ) : (
-                <Button onClick={() => handleEditClick(index, row)}>Bearbeiten</Button>
+              {type === 'user' && (
+                editIndex === index ? (
+                  <Button onClick={() => handleSaveClick(index)}>Speichern</Button>
+                ) : (
+                  <Button onClick={() => handleEditClick(index, row)}>Bearbeiten</Button>
+                )
               )}
               <Button onClick={() => onDelete(index)}>Löschen</Button>
             </Cell>
@@ -82,49 +84,51 @@ const ListComp = ({ title, data, onEdit, onDelete, onAdd }) => {
         ))}
       </ListItemsContainer>
 
-      {/* Formular zum Hinzufügen eines neuen Nutzers */}
-      <Row>
-        <Cell>
-          <Input
-            value={newData.first_name}
-            onChange={(e) => handleNewDataChange(e, 'first_name')}
-            placeholder="Vorname"
-          />
-        </Cell>
-        <Cell>
-          <Input
-            value={newData.last_name}
-            onChange={(e) => handleNewDataChange(e, 'last_name')}
-            placeholder="Nachname"
-          />
-        </Cell>
-        <Cell>
-          <Input
-            value={newData.email}
-            onChange={(e) => handleNewDataChange(e, 'email')}
-            placeholder="E-Mail"
-          />
-        </Cell>
-        <Cell>
-          <Input
-            value={newData.password}
-            type="password"
-            onChange={(e) => handleNewDataChange(e, 'password')}
-            placeholder="Passwort"
-          />
-        </Cell>
-        <Cell>
-          <Input
-            value={newData.password_confirmation}
-            type="password"
-            onChange={(e) => handleNewDataChange(e, 'password_confirmation')}
-            placeholder="Passwort bestätigen"
-          />
-        </Cell>
-        <Cell>
-          <Button onClick={handleAddClick}>Hinzufügen</Button>
-        </Cell>
-      </Row>
+      {/* Nur bei type="user" soll das Hinzufügen-Formular angezeigt werden */}
+      {type === 'user' && (
+        <Row>
+          <Cell>
+            <Input
+              value={newData.first_name}
+              onChange={(e) => handleNewDataChange(e, 'first_name')}
+              placeholder="Vorname"
+            />
+          </Cell>
+          <Cell>
+            <Input
+              value={newData.last_name}
+              onChange={(e) => handleNewDataChange(e, 'last_name')}
+              placeholder="Nachname"
+            />
+          </Cell>
+          <Cell>
+            <Input
+              value={newData.email}
+              onChange={(e) => handleNewDataChange(e, 'email')}
+              placeholder="E-Mail"
+            />
+          </Cell>
+          <Cell>
+            <Input
+              value={newData.password}
+              type="password"
+              onChange={(e) => handleNewDataChange(e, 'password')}
+              placeholder="Passwort"
+            />
+          </Cell>
+          <Cell>
+            <Input
+              value={newData.password_confirmation}
+              type="password"
+              onChange={(e) => handleNewDataChange(e, 'password_confirmation')}
+              placeholder="Passwort bestätigen"
+            />
+          </Cell>
+          <Cell>
+            <Button onClick={handleAddClick}>Hinzufügen</Button>
+          </Cell>
+        </Row>
+      )}
     </Container>
   );
 };

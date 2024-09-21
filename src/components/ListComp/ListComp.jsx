@@ -46,6 +46,14 @@ const ListComp = ({ title, data, onEdit, onDelete, onAdd, type }) => {
     }); // Felder zurücksetzen
   };
 
+  // Löschbestätigung und Löschvorgang
+  const handleDeleteClick = (index) => {
+    const confirmed = window.confirm('Möchten Sie diesen Eintrag wirklich löschen?');
+    if (confirmed) {
+      onDelete(index); // Nur löschen, wenn die Bestätigung erfolgt ist
+    }
+  };
+
   return (
     <Container>
       <TitleContainer>
@@ -78,7 +86,7 @@ const ListComp = ({ title, data, onEdit, onDelete, onAdd, type }) => {
                   <Button onClick={() => handleEditClick(index, row)}>Bearbeiten</Button>
                 )
               )}
-              <Button onClick={() => onDelete(index)}>Löschen</Button>
+              <Button onClick={() => handleDeleteClick(index)}>Löschen</Button>
             </Cell>
           </Row>
         ))}

@@ -49,6 +49,32 @@ const AdminBooking = () => {
     ],
   };
 
+  const handleDelete = async (index) => {
+    const token = localStorage.getItem('access_token');
+    const bookingId = booking[index].id; // Annahme: 'id' ist der Schlüssel für die Buchung-ID
+
+    try {
+      const response = await axios.delete(`https://parking.enten.dev/api/booking/${bookingId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        console.log('Booking successfully deleted:', response.data.message);
+
+        // Entferne die Buchung aus den lokalen Daten
+        const updatedData = [...booking];
+        updatedData.splice(index, 1);
+        setBooking(updatedData);
+      }
+    } catch (error) {
+      console.error('Booking deletion failed:', error.response?.data || error.message);
+    }
+  };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = booking.slice(indexOfFirstItem, indexOfLastItem);
@@ -79,7 +105,7 @@ const AdminBooking = () => {
             data={currentItems}
             title={title.bookings}
             onEdit={() => {}}
-            onDelete={() => {}}
+            onDelete={handleDelete}  // Delete-Funktion hier übergeben
             onAdd={() => {}}
           />
           {error && <Error>Keine Daten vorhanden</Error>}

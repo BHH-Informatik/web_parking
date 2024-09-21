@@ -1,56 +1,74 @@
 import React, { useState } from 'react';
-import { Container, ListItemsContainer, Title, TitleContainer, Cell, Row, Button, Input } from './ListComp.styled';
+import { Container, ListItemsContainer, Title, TitleContainer, Cell, Row, Button, Input, ErrorTooltip } from './ListComp.styled';
 
 const ListComp = ({ title, data, onEdit, onDelete, onAdd, type }) => {
-  const [editIndex, setEditIndex] = useState(null); // Zum Verfolgen, welche Zeile bearbeitet wird
+  const [editIndex, setEditIndex] = useState(null);
   const [newData, setNewData] = useState({
     first_name: '',
     last_name: '',
     email: '',
     password: '',
     password_confirmation: '',
-  }); // Für das Hinzufügen neuer Daten
-  const [editableRow, setEditableRow] = useState({}); // Für das Bearbeiten von Zeilen
+  });
+  const [editableRow, setEditableRow] = useState({});
+  const [errors, setErrors] = useState({}); // Speichert die Fehlermeldungen
 
-  // Bearbeiten einer Zeile aktivieren
-  const handleEditClick = (index, row) => {
-    setEditIndex(index);
-    setEditableRow({ ...row });
+  // Validierungsfunktion für das Passwort
+  const validatePassword = (password) => password.length >= 8;
+
+  // Validierungsfunktion für die E-Mail
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
-  // Änderungen speichern
-  const handleSaveClick = (index) => {
-    onEdit(index, editableRow); // onEdit-Funktion aufrufen, um die Änderungen zu übergeben
-    setEditIndex(null);
+  // Überprüfen, ob alle Felder korrekt ausgefüllt sind
+  const validateForm = () => {
+    let formIsValid = true;
+    let newErrors = {};
+
+    if (!newData.first_name) {
+      formIsValid = false;
+      newErrors.first_name = 'Vorname ist erforderlich';
+    }
+    if (!newData.last_name) {
+      formIsValid = false;
+      newErrors.last_name = 'Nachname ist erforderlich';
+    }
+    if (!newData.email) {
+      formIsValid = false;
+      newErrors.email = 'E-Mail ist erforderlich';
+    } else if (!validateEmail(newData.email)) {
+      formIsValid = false;
+      newErrors.email = 'Ungültige E-Mail-Adresse';
+    }
+    if (!newData.password) {
+      formIsValid = false;
+      newErrors.password = 'Passwort ist erforderlich';
+    } else if (!validatePassword(newData.password)) {
+      formIsValid = false;
+      newErrors.password = 'Das Passwort muss mindestens 8 Zeichen lang sein';
+    }
+    if (newData.password !== newData.password_confirmation) {
+      formIsValid = false;
+      newErrors.password_confirmation = 'Passwörter stimmen nicht überein';
+    }
+
+    setErrors(newErrors);
+    return formIsValid;
   };
 
-  // Änderungen an der bearbeiteten Zeile verfolgen
-  const handleChange = (e, key) => {
-    setEditableRow({ ...editableRow, [key]: e.target.value });
-  };
-
-  // Änderungen für neue Daten verfolgen
-  const handleNewDataChange = (e, key) => {
-    setNewData({ ...newData, [key]: e.target.value });
-  };
-
-  // Neue Zeile hinzufügen
   const handleAddClick = () => {
-    onAdd(newData); // onAdd-Funktion aufrufen, um neue Daten hinzuzufügen
-    setNewData({
-      first_name: '',
-      last_name: '',
-      email: '',
-      password: '',
-      password_confirmation: '',
-    }); // Felder zurücksetzen
-  };
-
-  // Löschbestätigung und Löschvorgang
-  const handleDeleteClick = (index) => {
-    const confirmed = window.confirm('Möchten Sie diesen Eintrag wirklich löschen?');
-    if (confirmed) {
-      onDelete(index); // Nur löschen, wenn die Bestätigung erfolgt ist
+    if (validateForm()) {
+      onAdd(newData);
+      setNewData({
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+      });
+      setErrors({});
     }
   };
 
@@ -71,7 +89,7 @@ const ListComp = ({ title, data, onEdit, onDelete, onAdd, type }) => {
                 {editIndex === index ? (
                   <Input
                     value={editableRow[col.key]}
-                    onChange={(e) => handleChange(e, col.key)}
+                    onChange={(e) => setEditableRow({ ...editableRow, [col.key]: e.target.value })}
                   />
                 ) : (
                   row[col.key] + ""
@@ -81,61 +99,67 @@ const ListComp = ({ title, data, onEdit, onDelete, onAdd, type }) => {
             <Cell>
               {type === 'user' && (
                 editIndex === index ? (
-                  <Button onClick={() => handleSaveClick(index)}>Speichern</Button>
+                  <Button onClick={() => onEdit(index, editableRow)}>Speichern</Button>
                 ) : (
-                  <Button onClick={() => handleEditClick(index, row)}>Bearbeiten</Button>
+                  <Button onClick={() => setEditIndex(index)}>Bearbeiten</Button>
                 )
               )}
-              <Button onClick={() => handleDeleteClick(index)}>Löschen</Button>
+              <Button onClick={() => onDelete(index)}>Löschen</Button>
             </Cell>
           </Row>
         ))}
       </ListItemsContainer>
 
-      {/* Nur bei type="user" soll das Hinzufügen-Formular angezeigt werden */}
       {type === 'user' && (
-        <Row>
-          <Cell>
-            <Input
-              value={newData.first_name}
-              onChange={(e) => handleNewDataChange(e, 'first_name')}
-              placeholder="Vorname"
-            />
-          </Cell>
-          <Cell>
-            <Input
-              value={newData.last_name}
-              onChange={(e) => handleNewDataChange(e, 'last_name')}
-              placeholder="Nachname"
-            />
-          </Cell>
-          <Cell>
-            <Input
-              value={newData.email}
-              onChange={(e) => handleNewDataChange(e, 'email')}
-              placeholder="E-Mail"
-            />
-          </Cell>
-          <Cell>
-            <Input
-              value={newData.password}
-              type="password"
-              onChange={(e) => handleNewDataChange(e, 'password')}
-              placeholder="Passwort"
-            />
-          </Cell>
-          <Cell>
-            <Input
-              value={newData.password_confirmation}
-              type="password"
-              onChange={(e) => handleNewDataChange(e, 'password_confirmation')}
-              placeholder="Passwort bestätigen"
-            />
-          </Cell>
-          <Cell>
-            <Button onClick={handleAddClick}>Hinzufügen</Button>
-          </Cell>
-        </Row>
+        <>
+          <Row>
+            <Cell>
+              <Input
+                value={newData.first_name}
+                onChange={(e) => setNewData({ ...newData, first_name: e.target.value })}
+                placeholder="Vorname"
+              />
+              {errors.first_name && <ErrorTooltip>{errors.first_name}</ErrorTooltip>}
+            </Cell>
+            <Cell>
+              <Input
+                value={newData.last_name}
+                onChange={(e) => setNewData({ ...newData, last_name: e.target.value })}
+                placeholder="Nachname"
+              />
+              {errors.last_name && <ErrorTooltip>{errors.last_name}</ErrorTooltip>}
+            </Cell>
+            <Cell>
+              <Input
+                value={newData.email}
+                onChange={(e) => setNewData({ ...newData, email: e.target.value })}
+                placeholder="E-Mail"
+              />
+              {errors.email && <ErrorTooltip>{errors.email}</ErrorTooltip>}
+            </Cell>
+            <Cell>
+              <Input
+                value={newData.password}
+                type="password"
+                onChange={(e) => setNewData({ ...newData, password: e.target.value })}
+                placeholder="Passwort"
+              />
+              {errors.password && <ErrorTooltip>{errors.password}</ErrorTooltip>}
+            </Cell>
+            <Cell>
+              <Input
+                value={newData.password_confirmation}
+                type="password"
+                onChange={(e) => setNewData({ ...newData, password_confirmation: e.target.value })}
+                placeholder="Passwort bestätigen"
+              />
+              {errors.password_confirmation && <ErrorTooltip>{errors.password_confirmation}</ErrorTooltip>}
+            </Cell>
+            <Cell>
+              <Button onClick={handleAddClick}>Hinzufügen</Button>
+            </Cell>
+          </Row>
+        </>
       )}
     </Container>
   );

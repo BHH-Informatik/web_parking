@@ -34,6 +34,7 @@ export const Row = styled.div`
   border-radius: 5px;
   margin-bottom: 2px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
 `;
 
 export const Title = styled.div`
@@ -52,6 +53,7 @@ export const Cell = styled.div`
   padding: 2px;
   font-size: 0.9rem;
   color: #555;
+  position: relative;
 `;
 
 export const Button = styled.button`
@@ -87,5 +89,31 @@ export const Input = styled.input`
     outline: none;
     border-color: #FC6D5C;
     box-shadow: 0 0 0 2px rgba(252, 109, 92, 0.2);
+  }
+`;
+
+export const ErrorTooltip = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fc6d5c;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  z-index: 1;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #fc6d5c transparent;
   }
 `;

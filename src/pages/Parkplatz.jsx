@@ -10,7 +10,6 @@ const Parkplatz = () => {
   return (
     <>
       <FlexContainer>
-        <Navbar/>
         <ParkplaetzeOverview/>
       </FlexContainer>
     </>

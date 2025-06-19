@@ -36,20 +36,25 @@ const TimeslotPicker = ({ selectedParkplatz, bookingDate, blockedTimes, onBookin
         }
     };
 
+    const formatTime = (time) => {
+        const [hours, minutes] = time.split(':');
+        return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+    };
+
     const handleBookingClick = () => {
         if (!selectedParkplatz || !startTimeslot || !endTimeslot) {
             alert('Bitte wähle einen Parkplatz und einen Timeslot aus.');
             return;
         }
 
-        const [startTime] = startTimeslot.split(':');
-        const [endTime] = endTimeslot.split(':');
+        const startTimeFormatted = formatTime(startTimeslot);
+        const endTimeFormatted = formatTime(endTimeslot);
 
         onBooking({
-            parking_lot_id: selectedParkplatz,
+            parking_lot_id: Number(selectedParkplatz),
             booking_date: bookingDate,
-            start_time: `${startTime}:00`,
-            end_time: `${endTime}:00`
+            start_time: startTimeFormatted,
+            end_time: endTimeFormatted
         });
     };
 

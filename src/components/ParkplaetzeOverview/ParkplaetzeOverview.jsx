@@ -125,12 +125,6 @@ const ParkplaetzeOverview = () => {
         <>
             <Container>
                 <ParkplatzInformation>
-                    <ParkplatzStatusContainer>
-                        <StatusNumber>4</StatusNumber>
-                        <StatusText>Voll</StatusText>
-                        <StatusNumber>16</StatusNumber>
-                        <StatusText>Leer</StatusText>
-                    </ParkplatzStatusContainer>
                     <ColorInformationContainer>
                         <ColorInformation>
                             <Color color="#FDB0A4" />

@@ -29,11 +29,15 @@ export const Button = styled.button`
     border: none;
     background-color: #FC6D5C;
     color: white;
-    width: 25%;
     border-radius: 7px;
     margin: 3% 0 0 0;
-    padding: 1%;
+    padding: 2% 4%;
     box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.25);
+    cursor: pointer;
+
+    &:hover{
+        background-color: #ff4530;
+    }
 `
 
 export const Text = styled.p`

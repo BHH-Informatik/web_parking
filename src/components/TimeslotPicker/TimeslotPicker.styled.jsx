@@ -35,11 +35,16 @@ export const Timeslot = styled.div`
 `;
 
 export const Button = styled.button`
-    margin: 3% 0 0 0;
-    padding: 10px 20px;
+    border: none;
     background-color: #FC6D5C;
     color: white;
-    border: none;
-    border-radius: 5px;
+    border-radius: 7px;
+    margin: 3% 0 0 0;
+    padding: 2% 4%;
+    box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.25);
     cursor: pointer;
+
+    &:hover{
+        background-color: #ff4530;
+    }
 `;

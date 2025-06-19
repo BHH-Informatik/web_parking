@@ -10,7 +10,6 @@ const Parkplatz = () => {
   return (
     <>
       <FlexContainer>
-        <Navbar/>
         <Kontaktformular/>
       </FlexContainer>
     </>

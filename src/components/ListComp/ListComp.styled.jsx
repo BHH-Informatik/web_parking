@@ -11,8 +11,9 @@ export const Container = styled.div`
 
 export const TitleContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  padding: 15px 4px 15px 4px;
+  justify-content: left;
+  gap: 160px;
+  padding: 15px 4px 15px 2%;
   background-color: #0393a319;
   border-radius: 8px;
   margin-bottom: 15px;
@@ -22,6 +23,8 @@ export const ListItemsContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 10px;
+  max-height: 500px;
+  overflow-y: scroll;
 `;
 
 export const Row = styled.div`
@@ -38,7 +41,6 @@ export const Row = styled.div`
 `;
 
 export const Title = styled.div`
-  width: 20%;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -49,8 +51,8 @@ export const Title = styled.div`
 
 export const Cell = styled.div`
   width: 20%;
-  text-align: center;
-  padding: 2px;
+  text-align: left;
+  padding: 2% 0 2% 2%;
   font-size: 0.9rem;
   color: #555;
   position: relative;
@@ -58,7 +60,7 @@ export const Cell = styled.div`
 
 export const Button = styled.button`
   margin: 0 5px;
-  padding: 8px 15px;
+  padding: 3%;
   background-color: #FC6D5C;
   color: white;
   border: none;

@@ -101,7 +101,7 @@ export const TableCell = styled.td`
             if (status === 'FULL_DAY_BLOCKED') return '#FDB0A4';
             if (isSelected) return '#FFE0C1';
             if (status === 'TIMERANGE_BLOCKED') return '#C0DBD7';
-            return '#DAD9D6';
+            return '#C0DBD7';
         }};
         cursor: pointer;
     }
